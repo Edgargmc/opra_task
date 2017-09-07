@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . '/libraries/REST_Controller.php';
 
-// use namespace
 use Restserver\Libraries\REST_Controller;
 
 class TodoController extends REST_Controller {
@@ -17,7 +16,7 @@ class TodoController extends REST_Controller {
     public function index_get(){
     }
 
-    public function TaskByID_get(){
+    public function taskById_get(){
 
         $id = $this->get('id');
         if(empty($id)) return $this->response(['msg'=>'Empty id task'], REST_Controller::HTTP_BAD_REQUEST);
@@ -29,12 +28,12 @@ class TodoController extends REST_Controller {
             : $this->response($task, REST_Controller::HTTP_OK);
     }
 
-    public function Task_get(){
+    public function task_get(){
         $tasks = $this->Todo->getAll();
         return $this->response($tasks, REST_Controller::HTTP_OK);
     }
 
-    public function Task_post(){
+    public function task_post(){
 
         $dataTaks = json_decode(file_get_contents('php://input'));
 
