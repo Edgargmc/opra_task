@@ -6,30 +6,27 @@ require APPPATH . '/libraries/REST_Controller.php';
 // use namespace
 use Restserver\Libraries\REST_Controller;
 
-
 class TodoController extends REST_Controller {
 
 
-    function __construct() {
+    public function __construct() {
         parent::__construct();
         $this->load->model('Todo');
-
     }
 
     public function index_get(){
     }
 
     public function TaskByID_get(){
+
         $id = $this->get('id');
         if(empty($id)) return $this->response(['msg'=>'Empty id task'], REST_Controller::HTTP_BAD_REQUEST);
 
         $task = $this->Todo->getTaskById($id);
 
-        if(empty($task)){
-            return $this->response(['msg'=>'Id task not found'], REST_Controller::HTTP_BAD_REQUEST);
-        } else {
-            return $this->response($task, REST_Controller::HTTP_OK);
-        }
+        return empty($task)
+            ? $this->response(['msg' => 'Id task not found'], REST_Controller::HTTP_BAD_REQUEST)
+            : $this->response($task, REST_Controller::HTTP_OK);
     }
 
     public function Task_get(){
@@ -51,14 +48,11 @@ class TodoController extends REST_Controller {
         $result  = $this->Todo->save($id_status, $description, $author);
 
 
-        if(!$result['code']){
-            return $this->response(['msg'=>'Task create'], REST_Controller::HTTP_OK);
-        }else{
-            return $this->response(['msg'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return !$result['code']
+            ? $this->response(['msg' => 'Task create'], REST_Controller::HTTP_OK)
+            : $this->response(['msg' => 'MYSQL ' . $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
 
     }
-
 
     public function updateTask_put(){
 
@@ -82,7 +76,6 @@ class TodoController extends REST_Controller {
         return $this->response(['msg'=> 'Not found id'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-
     public function deleteTask_delete(){
         $id = $this->get('id');
 
@@ -93,8 +86,6 @@ class TodoController extends REST_Controller {
             return $this->response(['msg'=> 'Not found id'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }else{
             return $this->response(['msg'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-
-
         }
     }
 

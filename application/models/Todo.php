@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
 class Todo extends CI_Model{
 
     private $table  = "tasks";
@@ -11,9 +10,9 @@ class Todo extends CI_Model{
     }
 
     public function getAll(){
-        $result = [];
 
-        $query = $this->db->get_where($this->table, array('date_delete' => NULL));
+        $result = [];
+        $query = $this->db->get_where($this->table, ['date_delete' => NULL]);
 
         foreach ($query->result_array('Tasks') as $row){
             array_push($result,$row);
@@ -25,7 +24,6 @@ class Todo extends CI_Model{
     public function getTaskById($taskId){
 
         $query = $this->db->get_where($this->table, ["id" => $taskId]);
-
         return $query->row();
     }
 
@@ -63,7 +61,6 @@ class Todo extends CI_Model{
     public function delete($taskId){
 
         $query = $this->db->get_where($this->table, ["id" => $taskId]);
-
 
         if($query->num_rows()){
             $this->db->where('id', $taskId);
