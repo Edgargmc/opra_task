@@ -21,12 +21,12 @@ class TodoController extends REST_Controller {
 
     public function TaskByID_get(){
         $id = $this->get('id');
-        if(empty($id)) return $this->response(['error'=>'Empty id task'], REST_Controller::HTTP_BAD_REQUEST);
+        if(empty($id)) return $this->response(['msg'=>'Empty id task'], REST_Controller::HTTP_BAD_REQUEST);
 
         $task = $this->Todo->getTaskById($id);
 
         if(empty($task)){
-            return $this->response(['error'=>'Id task not found'], REST_Controller::HTTP_BAD_REQUEST);
+            return $this->response(['msg'=>'Id task not found'], REST_Controller::HTTP_BAD_REQUEST);
         } else {
             return $this->response($task, REST_Controller::HTTP_OK);
         }
@@ -54,8 +54,48 @@ class TodoController extends REST_Controller {
         if(!$result['code']){
             return $this->response(['msg'=>'Task create'], REST_Controller::HTTP_OK);
         }else{
-            return $this->response(['error'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->response(['msg'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
 
     }
+
+
+    public function updateTask_put(){
+
+        $dataTaks = json_decode(file_get_contents('php://input'));
+
+        $id = (int) $this->get('id');
+        $id_status  = $dataTaks->id_status        ??  "";
+        $description = $dataTaks->description        ??  "";
+        $author = $dataTaks->author        ??  "";
+
+        if(empty($id))          return $this->response(['msg'=>'empty author'], REST_Controller::HTTP_BAD_REQUEST);
+        if(empty($id_status))   return $this->response(['msg'=>'empty id status'], REST_Controller::HTTP_BAD_REQUEST);
+        if(empty($description)) return $this->response(['msg'=>'empty description'], REST_Controller::HTTP_BAD_REQUEST);
+        if(empty($author))      return $this->response(['msg'=>'empty author'], REST_Controller::HTTP_BAD_REQUEST);
+
+        $result  = $this->Todo->update($id, $id_status, $description, $author);
+
+        if(is_numeric($result)){
+            return $this->response(['msg'=> 'Success' .  $result['code']], REST_Controller::HTTP_OK);
+        }
+        return $this->response(['msg'=> 'Not found id'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+
+    public function deleteTask_delete(){
+        $id = $this->get('id');
+
+        $result = $this->Todo->delete($id);
+
+        if(is_bool($result)){
+            if($result)   return $this->response(['msg'=> 'Success' .  $result['code']], REST_Controller::HTTP_OK);
+            return $this->response(['msg'=> 'Not found id'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }else{
+            return $this->response(['msg'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+
+
+        }
+    }
+
 }

@@ -53,9 +53,10 @@ $route['default_controller'] = 'TodoController';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['tasks'] = 'TodoController/Task';
-$route['task/(:num)'] = 'TodoController/TaskByID/id/$1';
-
+$route['tasks']                     = 'TodoController/Task';
+$route['task/(:num)']               = 'TodoController/TaskByID/id/$1';
+$route['task/update/(:num)']        = 'TodoController/updateTask/id/$1';
+$route['task/delete/(:num)']        = 'TodoController/deleteTask/id/$1';
 
 
 
