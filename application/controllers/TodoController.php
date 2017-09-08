@@ -96,12 +96,13 @@ class TodoController extends REST_Controller {
 
     public function filter_post(){
         $filter = json_decode(file_get_contents('php://input'));
-
+  
        if($filter){
            $author  = $filter->author        ??  "";
            $statusFilter  = $filter->statusFilter        ??  "";
+           $dateFilter  = $filter->dateFilter        ??  "";
 
-           $result  = $this->Todo->filter($author, $statusFilter);
+           $result  = $this->Todo->filter($author, $statusFilter, $dateFilter);
 
            if($result){
                return $this->response($result, REST_Controller::HTTP_OK);

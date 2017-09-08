@@ -9,9 +9,9 @@ class Todo extends CI_Model{
     public function __construct(){
         parent::__construct();
     }
-    
+
     public function getAll(){
-        
+
         $result = [];
         $query = $this->db->get($this->table);
 
@@ -21,7 +21,7 @@ class Todo extends CI_Model{
 
         return $result;
     }
-    
+
     public function getTaskById($taskId){
 
         $query = $this->db->get_where($this->table, ["id" => $taskId]);
@@ -62,12 +62,12 @@ class Todo extends CI_Model{
     public function delete($taskId){
 
         $query = $this->db->get_where($this->table, ["id" => $taskId]);
-        
+
         if($query->num_rows()){
             $this->db->where('id', $taskId);
             $this->db->delete($this->table);
             $result = $this->db->error();
-            
+
             if($result['code'] !== 0){
                 print_r($result);
                 return $result;
@@ -78,16 +78,31 @@ class Todo extends CI_Model{
         }
     }
 
-    public function filter($author, $statusFilter){
-        
+    public function filter($author, $statusFilter, $dateFilter){
+
         $result = [];
+
+        $this->db->from($this->table);
+
+        if($dateFilter){
+            if($dateFilter === 'YESTERDAY'){
+                $this->db->where("date_create between subdate(CURDATE(), 1) and CURDATE()");
+            }else{
+                $this->db->where("date_create > DATE_SUB(NOW(), INTERVAL 1 " . $dateFilter .")");
+            }
+        }
+
         if($author <> '')
             $this->db->or_like('author', $author);
         if($statusFilter <> '')
             $this->db->or_like('id_status', $statusFilter);
-        $query = $this->db->get($this->table);
+        $query = $this->db->get();
 
-        
+//        print_r($this->db->last_query());
+//
+//        die();
+
+
         foreach ($query->result_array('Tasks') as $row){
             array_push($result,$row);
         }
