@@ -29,8 +29,14 @@ class TodoController extends REST_Controller {
     }
 
     public function task_get(){
+
         $tasks = $this->Todo->getAll();
-        return $this->response($tasks, REST_Controller::HTTP_OK);
+
+        if($tasks){
+            return $this->response($tasks, REST_Controller::HTTP_OK);
+    }
+
+        return $this->response(['msg' => 'No tasks'], REST_Controller::HTTP_OK);
     }
 
     public function task_post(){
@@ -86,6 +92,22 @@ class TodoController extends REST_Controller {
         }else{
             return $this->response(['msg'=> 'MYSQL ' .  $result['code']], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function filter_post(){
+        $filter = json_decode(file_get_contents('php://input'));
+
+       if($filter){
+           $author  = $filter->author        ??  "";
+           $statusFilter  = $filter->statusFilter        ??  "";
+
+           $result  = $this->Todo->filter($author, $statusFilter);
+
+           if($result){
+               return $this->response($result, REST_Controller::HTTP_OK);
+           }
+
+       }
     }
 
 }

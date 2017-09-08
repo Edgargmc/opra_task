@@ -77,4 +77,23 @@ class Todo extends CI_Model{
             return false;
         }
     }
+
+    public function filter($author, $statusFilter){
+        
+        $result = [];
+        if($author <> '')
+            $this->db->or_like('author', $author);
+        if($statusFilter <> '')
+            $this->db->or_like('id_status', $statusFilter);
+        $query = $this->db->get($this->table);
+
+        
+        foreach ($query->result_array('Tasks') as $row){
+            array_push($result,$row);
+        }
+        return $result;
+    }
+
+
+
 }

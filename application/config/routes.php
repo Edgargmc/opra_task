@@ -57,6 +57,7 @@ $route['tasks']                     = 'TodoController/task';
 $route['task/(:num)']               = 'TodoController/taskById/id/$1';
 $route['task/update/(:num)']        = 'TodoController/updateTask/id/$1';
 $route['task/delete/(:num)']        = 'TodoController/deleteTask/id/$1';
+$route['filter']                    = 'TodoController/filter';
 
 
 
