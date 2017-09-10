@@ -86,7 +86,9 @@ class Todo extends CI_Model{
 
         if($dateFilter){
             if($dateFilter === 'YESTERDAY'){
-                $this->db->where("date_create between subdate(CURDATE(), 1) and CURDATE()");
+                $this->db->where("DATE(date_create) = CURDATE() - 1");
+            }else if($dateFilter === 'DAY'){
+                $this->db->where("date(date_create)= curdate()");
             }else{
                 $this->db->where("date_create > DATE_SUB(NOW(), INTERVAL 1 " . $dateFilter .")");
             }
